@@ -28,6 +28,6 @@ treb7uchet)";
 auto main() -> int {
     assert(solve(test_input) == 142 && "Solving with test input failed!");
 
-    printf("Solution: %d\n", solve(read_file("input.txt")));
+    printf("Solution: %d\n", solve(read_file("day-1/input.txt")));
     return EXIT_SUCCESS;
 }
