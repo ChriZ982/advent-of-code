@@ -2,7 +2,7 @@ FLAGS=-std=gnu++23 -O3 -Wall -Wextra -Wconversion -s -flto -I$(shell pwd)/vcpkg/
 
 deps:
 	./vcpkg/bootstrap-vcpkg.sh -disableMetrics
-	./vcpkg/vcpkg install fmt
+	# ./vcpkg/vcpkg install fmt
 
 day-1-part1: day-1/part1.cpp
 	g++ $(FLAGS) -o build/day-1-part1 day-1/part1.cpp -lfmt
