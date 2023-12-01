@@ -1,4 +1,4 @@
-FLAGS=-std=gnu++23 -O3 -Wall -Wextra -Wconversion -I$(shell pwd)/vcpkg/installed/x64-linux/include/ -L$(shell pwd)/vcpkg/installed/x64-linux/lib/
+FLAGS=-std=gnu++23 -O3 -Wall -Wextra -Wconversion -s -flto -I$(shell pwd)/vcpkg/installed/x64-linux/include/ -L$(shell pwd)/vcpkg/installed/x64-linux/lib/
 
 deps:
 	./vcpkg/bootstrap-vcpkg.sh -disableMetrics
