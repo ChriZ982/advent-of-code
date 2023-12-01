@@ -1,0 +1,2 @@
+CompileFlags:
+  Add: [-std=gnu++23, -O3, -Wall, -Wextra, -Wconversion, -I/home/chris/advent-of-code/2023-cpp/vcpkg/installed/x64-linux/include/]
