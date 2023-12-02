@@ -2,6 +2,9 @@
 
 Advent of Code solutions for 2023 written in Rust and C++ :rocket:
 
+My goal for this year is to compare Rust with C++ and see in what state the "functional" side of C++ is currently. The goal is **not** to 
+produce the most readable and robust code.
+
 To run a program, simply `cd` into the directory of the year and run the following command:
 
 ```bash
