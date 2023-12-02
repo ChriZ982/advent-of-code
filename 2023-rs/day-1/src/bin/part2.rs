@@ -1,3 +1,4 @@
+use core::borrow::Borrow;
 use std::fs::File;
 use std::io::prelude::*;
 
@@ -8,62 +9,58 @@ fn load_file() -> String {
     contents
 }
 
-fn solve(input: String) -> i32 {
-    input
-        .split("\n")
-        .map(|line| {
-            if line.len() == 0 {
-                return 0;
-            }
-            let mut first_idx = line.len();
-            let mut last_idx = 0;
-            let mut first_num = 0;
-            let mut last_num = 0;
-            for num in 1..=9 {
-                let word = match num {
-                    1 => "one",
-                    2 => "two",
-                    3 => "three",
-                    4 => "four",
-                    5 => "five",
-                    6 => "six",
-                    7 => "seven",
-                    8 => "eight",
-                    _ => "nine",
-                };
-                let mut word_idx = line.find(word);
-                if word_idx.is_some() && word_idx.unwrap() <= first_idx {
-                    first_idx = word_idx.unwrap();
-                    first_num = num;
-                }
-                let mut num_idx = line.find(&num.to_string());
-                if num_idx.is_some() && num_idx.unwrap() <= first_idx {
-                    first_idx = num_idx.unwrap();
-                    first_num = num;
-                }
-                word_idx = line.rfind(word);
-                if word_idx.is_some() && word_idx.unwrap() >= last_idx {
-                    last_idx = word_idx.unwrap();
-                    last_num = num;
-                }
-                num_idx = line.rfind(&num.to_string());
-                if num_idx.is_some() && num_idx.unwrap() >= last_idx {
-                    last_idx = num_idx.unwrap();
-                    last_num = num;
-                }
-            }
-            first_num * 10 + last_num
-        })
-        .sum::<i32>()
+fn first_digit(line: impl Iterator<Item = impl Borrow<u8>>) -> (usize, i32) {
+    line.enumerate()
+        .find(|(_, c)| c.borrow().is_ascii_digit())
+        .map(|(idx, c)| (idx, (c.borrow() - b'0') as i32))
+        .unwrap_or((usize::MAX, 0))
 }
 
-const TEST_INPUT: &str = "1abc2
-pqr3stu8vwx
-a1b2c3d4e5f
-treb7uchet";
+const WORDS: [&[u8]; 9] = [b"one", b"two", b"three", b"four", b"five", b"six", b"seven", b"eight", b"nine"];
+
+fn index_of_word(word: &[u8], line: &[u8]) -> usize {
+    line.windows(word.len()).position(|w| w == word).unwrap_or(usize::MAX)
+}
+
+fn first_word(line: &[u8], transform: &dyn Fn(&[u8]) -> Vec<u8>) -> (usize, i32) {
+    WORDS
+        .iter()
+        .enumerate()
+        .map(|(idx, word)| {
+            (
+                index_of_word(transform(word).as_slice(), transform(line).as_slice()),
+                (idx + 1) as i32,
+            )
+        })
+        .min_by_key(|(idx, _)| *idx)
+        .unwrap()
+}
+
+fn reverse_word(word: &[u8]) -> Vec<u8> {
+    word.iter().rev().copied().collect::<Vec<_>>()
+}
+
+fn solve(input: &str) -> i32 {
+    input
+        .split('\n')
+        .map(str::as_bytes)
+        .map(|line| {
+            10 * [first_word(line, &|w| w.to_vec()), first_digit(line.iter())].iter().min_by_key(|(idx, _)| *idx).unwrap().1
+                + [first_word(line, &reverse_word), first_digit(line.iter().rev())].iter().min_by_key(|(idx, _)| *idx).unwrap().1
+        })
+        .sum()
+}
+
+const TEST_INPUT: &str = "two1nine
+eightwothree
+abcone2threexyz
+xtwone3four
+4nineeightseven2
+zoneight234
+7pqrstsixteen";
 
 fn main() {
-    assert_eq!(solve(TEST_INPUT.to_string()), 142);
+    assert_eq!(solve(TEST_INPUT), 281);
 
-    println!("Solution: {}", solve(load_file()));
+    println!("Solution: {}", solve(load_file().trim_end()));
 }
