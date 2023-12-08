@@ -78,7 +78,6 @@ fn compare_hands(hand1: &Vec<Card>, hand2: &Vec<Card>) -> Ordering {
     if let order @ Ordering::Less | order @ Ordering::Greater = get_hand_type(hand1).cmp(&get_hand_type(hand2)) {
         return order;
     }
-
     for (c1, c2) in hand1.iter().zip(hand2.iter()) {
         if c1 != c2 {
             return c1.cmp(c2);
